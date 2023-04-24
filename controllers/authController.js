@@ -13,9 +13,11 @@ export const register=async (req,res)=>{
 
     const newUser =new User({
         username:req.body.username,
-        email:req.body.email,
+        usertype:req.body.usertype,
+        role:req.body.role,
+        // email:req.body.email,
         password:hash,
-        photo:req.body.photo
+        // photo:req.body.photo
     })
     try {
         await newUser.save()
@@ -27,7 +29,7 @@ export const register=async (req,res)=>{
     } catch (err) {
         res.status(500).json({
             success:false,
-            message:"Registration failed! Try changing the username"
+            message:err.message
         })
     }
 }
@@ -37,11 +39,11 @@ export const register=async (req,res)=>{
 // user login
 export const login=async (req,res)=>{
 
-    const email=req.body.email
+    const username=req.body.username
 
     try {
         
-        const user=await User.findOne({email})
+        const user=await User.findOne({username})
 
         // it user does not exist
         if(!user){
@@ -55,7 +57,6 @@ export const login=async (req,res)=>{
         // if user exists then check the password or compare the password
 
         const checkCorrectPassword=await bcrypt.compare(req.body.password,user.password)
-        // console.log(checkCorrectPassword);
 
         // if password is incorrect
         if(!checkCorrectPassword){
@@ -66,7 +67,12 @@ export const login=async (req,res)=>{
         }
         
 
-        const {password,role,...rest}=user._doc
+        const {password,role,...rest1}=user._doc
+        
+        const tmp={
+            role:role
+        }
+        const rest={...rest1,...tmp}
 
         // creating jwt token
 

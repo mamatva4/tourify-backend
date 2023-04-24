@@ -4,35 +4,21 @@ const bookingSchema = new mongoose.Schema(
   {
     
     userId: {
-      type: String,
+      type:mongoose.Types.ObjectId,
+        ref: "User",
     },
-    userEmail: {
-      type: String,
+   bookId:{
+        type:mongoose.Types.ObjectId,
+        ref: "Book",
     },
-    tourName:{
-        type:String,
-        required:true
-    },
-    fullName:{
-        type:String,
-        required:true
-    },
-    // guestSize:{
-    //     type:Number,
-    //     required:true
-    // },
-    phone:{
-        type:Number,
-        required:true
-    },
-    guestSize:{
-        type:Number,
-        required:true
-    },
-    bookAt:{
+    borrowedAt:{
         type:Date,
-        required:true
+        default: new Date().toISOString()
+    },
+    returnDate:{
+      type:Date
     }
+
   },
   { timestamps: true }
 );

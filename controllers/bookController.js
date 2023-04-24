@@ -1,39 +1,37 @@
-import Tour from "../models/Tour.js";
+import Book from "../models/Book.js"
 
+export const createBook=async(req,res)=>{
 
-
-// create tour
-export const createTour = async (req, res) => {
-    const newTour = new Tour(req.body)
-
+    const newBook=new Book(req.body)
     try {
-        const savedTour = await newTour.save()
+        
+        const savedBook= await newBook.save()
 
         res.status(200).json({
-            success: true,
-            message: "Successfully created",
-            data: savedTour
+            success:true,
+            message:"Book Added",
+            data:savedBook
         })
-    }
-    catch (err) {
+
+    } catch (error) {
         res.status(500).json({
-            success: false,
-            message: err.message
+            success:true,
+            message:error.message
         })
     }
 }
 
 
-// update tour
-export const updateTour = async (req, res) => {
+
+export const updateBook = async (req, res) => {
     const id = req.params.id
     try {
-        const updatedTour = await Tour.findByIdAndUpdate(id, { $set: req.body }, { new: true })
+        const updatedBook = await Book.findByIdAndUpdate(id, { $set: req.body }, { new: true })
 
         res.status(200).json({
             success: true,
             message: "Successfully updated",
-            data: updatedTour
+            data: updatedBook
         })
     }
     catch (err) {
@@ -44,11 +42,10 @@ export const updateTour = async (req, res) => {
     }
 }
 
-// delete tour
-export const deleteTour = async (req, res) => {
+export const deleteBook = async (req, res) => {
     const id = req.params.id
     try {
-        await Tour.findByIdAndDelete(id)
+        await Book.findByIdAndDelete(id)
 
         res.status(200).json({
             success: true,
@@ -64,17 +61,15 @@ export const deleteTour = async (req, res) => {
 }
 
 
-//get single tour
-
-export const getSingleTour = async (req, res) => {
+export const getSingleBook = async (req, res) => {
     const id = req.params.id
     try {
-        const tour = await Tour.findById(id).populate('reviews')
+        const book = await Book.findById(id)
 
         res.status(200).json({
             success: true,
             message: "Successful",
-            data: tour
+            data: book
         })
     }
     catch (err) {
@@ -85,22 +80,21 @@ export const getSingleTour = async (req, res) => {
     }
 }
 
-// get all tours
+// get all books
 
-export const getAllTour = async (req, res) => {
+export const getAllBook = async (req, res) => {
 
     // for pagination
     const page = parseInt(req.query.page)
-    console.log(page);
 
     try {
-        const tours = await Tour.find({}).populate('reviews').skip((page) * 8).limit(8)
+        const books = await Book.find({}).skip((page) * 8).limit(8)
 
         res.status(200).json({
             success: true,
             message: "Successful",
-            size: tours.length,
-            data: tours
+            size: books.length,
+            data: books
         })
     }
     catch (err) {
@@ -111,27 +105,23 @@ export const getAllTour = async (req, res) => {
     }
 }
 
-export const getTourBySearch = async (req, res) => {
+export const getBookBySearch = async (req, res) => {
     // i means case insensitive
-    const city = RegExp(req.query.city,"i")
-    const price = parseInt(req.query.price)
+    const title = RegExp(req.query.title,"i")
+    
+    // const price = parseInt(req.query.price)
 
     // const distance = parseInt(req.query.distance)
     // const maxGroupSize = parseInt(req.query.maxGroupSize)
 
     try {
-        const tours = await Tour.find({
-            city,
-            price: { $lte: price },
-            // distance: { $gte: distance },
-            // maxGroupSize: { $gte: maxGroupSize }
-        }).populate('reviews')
+        const books = await Book.find({$or:[{title:title},{isbn:title}]})
 
         res.status(200).json({
-            success: true,
+            success: true, 
             message: "Successful",
-            size: tours.length,
-            data: tours
+            size: books.length,
+            data: books
         })
     }
     catch (err) {
@@ -143,16 +133,16 @@ export const getTourBySearch = async (req, res) => {
 }
 
 
-export const getFeaturedTours = async (req, res) => {
+export const getPopularBooks = async (req, res) => {
     
     try {
-        const tours = await Tour.find({featured:true}).limit(8).populate('reviews')
+        const books = await Book.find({popular:true}).limit(8)
 
         res.status(200).json({
             success: true,
             message: "Successful",
-            size: tours.length,
-            data: tours
+            size: books.length,
+            data: books
         })
     }
     catch (err) {
@@ -163,12 +153,12 @@ export const getFeaturedTours = async (req, res) => {
     }
 }
 
-export const getTourCount=async(req,res)=>{
+export const getBooksCount=async(req,res)=>{
     try {
-        const tourCount=await Tour.estimatedDocumentCount()
+        const bookCount=await Book.estimatedDocumentCount()
         res.status(200).json({
             success:true,
-            data:tourCount
+            data:bookCount
         })
     } catch (err) {
         res.status(404).json({

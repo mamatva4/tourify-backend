@@ -9,12 +9,12 @@ const router=express.Router()
 
 
 
-router.put('/:id',verifyUser,updateUser)
+// router.put('/:id',verifyUser,updateUser)
 
-router.delete('/:id',verifyUser,deleteUser)
+// router.delete('/:id',verifyUser,deleteUser)
 
-router.get('/',verifyAdmin,getAllUser)
+// router.get('/',verifyAdmin,getAllUser)
 
-router.get('/:id',verifyUser,getSingleUser)
+// router.get('/:id',verifyUser,getSingleUser)
 
 export default router;
